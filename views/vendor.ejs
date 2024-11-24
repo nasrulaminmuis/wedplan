@@ -1,0 +1,124 @@
+<%- include('navbar'); %>
+  <!-- partial -->
+  <div class="main-panel">
+    <div class="content-wrapper pb-0">
+      <div class="page-header flex-wrap">
+        <div class="header-left">
+          <h3>List Vendor</h3>
+        </div>
+        <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
+          <a href="/form/vendor">
+          <button type="button" class="btn btn-success mt-2 mt-sm-0 p-3 me-2">Tambah Vendor</button>
+          </a>
+          <a href="/form/vendor">
+          <button type="button" class="btn btn-outline-danger mt-2 mt-sm-0 p-3">Hapus vendor</button>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th>Vendor</th>
+                <th>Role</th>
+                <th>Perusahaan</th>
+                <th class="text-right">Alamat</th>
+                <th class="text-right">Kontak</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center">1</td>
+                <td>Anjaz fotografi</td>
+                <td>Fotografer</td>
+                <td>Pt kamera keren</td>
+                <td class="text-right">jl anjas mara</td>
+                <td class="td-actions text-right">
+                  <button type="button" rel="tooltip" class="btn btn-info btn-just-icon btn-sm" data-original-title=""
+                    title="">
+                    <i class="material-icons">Email</i>
+                  </button>
+                  <button type="button" rel="tooltip" class="btn btn-success btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">Whatsapp</i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+
+                <td class="text-center">2</td>
+                <td>warung bu imah</td>
+                <td>Katering</td>
+                <td>cv bu imah</td>
+                <td class="text-right">jl tangkurupan</td>
+                <td class="td-actions text-right">
+                  <button type="button" rel="tooltip" class="btn btn-info btn-round btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">Email</i>
+                  </button>
+                  <button type="button" rel="tooltip" class="btn btn-success btn-round btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">Whatsapp</i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">3</td>
+                <td>Tenda muren</td>
+                <td>Penyewaan tenda</td>
+                <td>keluarga hj nain</td>
+                <td class="text-right">jl utama no 2</td>
+                <td class="td-actions text-right">
+                  <button type="button" rel="tooltip" class="btn btn-info btn-link btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">Email</i>
+                  </button>
+                  <button type="button" rel="tooltip" class="btn btn-success btn-link btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">Whatsapp</i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">4</td>
+                <td>zoomin</td>
+                <td>Livestrem vendor</td>
+                <td>pt zoomin</td>
+                <td class="text-right">jl buffer size</td>
+                <td class="td-actions text-right">
+                  <button type="button" rel="tooltip" class="btn btn-info btn-round btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">person</i>
+                  </button>
+                  <button type="button" rel="tooltip" class="btn btn-success btn-round btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">Whatsapp</i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">5</td>
+                <td>Pangung ceunah</td>
+                <td>penyewa dekor</td>
+                <td>pt anintasi</td>
+                <td class="text-right">jl sudirman no 20</td>
+                <td class="td-actions text-right">
+                  <button type="button" rel="tooltip" class="btn btn-info btn-just-icon btn-sm" data-original-title=""
+                    title="">
+                    <i class="material-icons">person</i>
+                  </button>
+                  <button type="button" rel="tooltip" class="btn btn-success btn-just-icon btn-sm"
+                    data-original-title="" title="">
+                    <i class="material-icons">Whatsapp</i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- content-wrapper ends -->
+    <%- include('footer'); %>

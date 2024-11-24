@@ -1,0 +1,82 @@
+<%- include('navbar'); %>
+  <!-- partial -->
+  <div class="main-panel">
+    <div class="content-wrapper pb-0">
+      <div class="page-header flex-wrap">
+        <div class="header-left">
+          <h3>Anggaran</h3>
+        </div>
+        <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
+          <a href="/form/dana">
+          <button type="button" class="btn btn-success mt-2 mt-sm-0 p-3 me-2">Tambah Pemasukan</button>
+          </a>
+          <a href="/form/dana">
+          <button type="button" class="btn btn-outline-danger mt-2 mt-sm-0 p-3">Tambah Pengeluaran</button>
+          </a>
+          <!-- <button type="button" class="btn btn-primary mt-2 mt-sm-0 btn-icon-text">
+                  <i class="mdi mdi-plus-circle"></i> Tambah Acara </button> -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="page-content page-container" id="page-content">
+          <div class="padding">
+            <div class="row container d-flex justify-content-center">
+
+              <div class="col-lg-8 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Nama Anggaran</th>
+                            <th>Jumlah</th>
+                            <th>Tanggal</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Samso Park</td>
+                            <td>1.000.000</td>
+                            <td>12 May 2017</td>
+                            <td><label class="badge badge-danger">Keluar</label></td>
+                          </tr>
+                          <tr>
+                            <td>Marlo Sanki</td>
+                            <td>2.000.000</td>
+                            <td>15 May 2015</td>
+                            <td><label class="badge badge-success">Masuk</label></td>
+                          </tr>
+                          <tr>
+                            <td>John ryte</td>
+                            <td>3.000.000</td>
+                            <td>14 May 2017</td>
+                            <td><label class="badge badge-success">Masuk</label></td>
+                          </tr>
+                          <tr>
+                            <td>Peter mark</td>
+                            <td>1.500.000</td>
+                            <td>16 May 2017</td>
+                            <td><label class="badge badge-danger">Keluar</label></td>
+                          </tr>
+                          <tr>
+                            <td>Dave</td>
+                            <td>500.000</td>
+                            <td>20 May 2017</td>
+                            <td><label class="badge badge-danger">Keluar</label></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- content-wrapper ends -->
+    <%- include('footer'); %>
