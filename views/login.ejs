@@ -35,19 +35,24 @@
     <div class="login-container">
         <h2 class="text-center">WedPlan</h2>
         <p class="text-center">Silahkan masuk menggunakan akun yang terdaftar</p>
-        <form>
+        <form action="/login" method="POST">
             <div class="mb-3">
-                <label for="emailOrUsername" class="form-label">Email atau Username</label>
-                <input type="text" class="form-control" id="emailOrUsername" placeholder="Email atau Username">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required placeholder="Email">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password">
+                <input type="password" class="form-control" id="password" name="password" required placeholder="Password">
             </div>
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="rememberMe">
                 <label class="form-check-label" for="rememberMe">Ingat saya</label>
             </div>
+            <% if (error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
             <button type="submit" class="btn btn-primary w-100">Masuk</button>
         </form>
         <p class="text-center mt-3">Belum memiliki akun? <a href="/daftar">Daftar disini</a></p>
