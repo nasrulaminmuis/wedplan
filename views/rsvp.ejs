@@ -1,129 +1,4 @@
 <%- include('navbar'); %>
-<style>
-  /*    --------------------------------------------------
-	:: General
-	-------------------------------------------------- */
-/*	--------------------------------------------------
-	:: Table Filter
-	-------------------------------------------------- */
-.panel {
-	border: 1px solid #ddd;
-	background-color: #fcfcfc;
-}
-.panel .btn-group {
-	margin: 15px 0 30px;
-}
-.panel .btn-group .btn {
-	transition: background-color .3s ease;
-}
-.table-filter {
-	background-color: #fff;
-	border-bottom: 1px solid #eee;
-}
-.table-filter tbody tr:hover {
-	cursor: pointer;
-	background-color: #eee;
-}
-.table-filter tbody tr td {
-	padding: 10px;
-	vertical-align: middle;
-	border-top-color: #eee;
-}
-.table-filter tbody tr.selected td {
-	background-color: #eee;
-}
-.table-filter tr td:first-child {
-	width: 38px;
-}
-.table-filter tr td:nth-child(2) {
-	width: 35px;
-}
-.ckbox {
-	position: relative;
-}
-.ckbox input[type="checkbox"] {
-	opacity: 0;
-}
-.ckbox label {
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-.ckbox label:before {
-	content: '';
-	top: 1px;
-	left: 0;
-	width: 18px;
-	height: 18px;
-	display: block;
-	position: absolute;
-	border-radius: 2px;
-	border: 1px solid #bbb;
-	background-color: #fff;
-}
-.ckbox input[type="checkbox"]:checked + label:before {
-	border-color: #2BBCDE;
-	background-color: #2BBCDE;
-}
-.ckbox input[type="checkbox"]:checked + label:after {
-	top: 3px;
-	left: 3.5px;
-	content: '\e013';
-	color: #fff;
-	font-size: 11px;
-	font-family: 'Glyphicons Halflings';
-	position: absolute;
-}
-.table-filter .star {
-	color: #ccc;
-	text-align: center;
-	display: block;
-}
-.table-filter .star.star-checked {
-	color: #F0AD4E;
-}
-.table-filter .star:hover {
-	color: #ccc;
-}
-.table-filter .star.star-checked:hover {
-	color: #F0AD4E;
-}
-.table-filter .media-photo {
-	width: 35px;
-}
-.table-filter .media-body {
-    display: block;
-    /* Had to use this style to force the div to expand (wasn't necessary with my bootstrap version 3.3.6) */
-}
-.table-filter .media-meta {
-	font-size: 11px;
-	color: #999;
-}
-.table-filter .media .title {
-	color: #2BBCDE;
-	font-size: 14px;
-	font-weight: bold;
-	line-height: normal;
-	margin: 0;
-}
-.table-filter .media .title span {
-	font-size: .8em;
-	margin-right: 20px;
-}
-.table-filter .media .title span.hadir {
-	color: #5cb85c;
-}
-.table-filter .media .title span.pending {
-	color: #f0ad4e;
-}
-.table-filter .media .title span.tidak hadir {
-	color: #d9534f;
-}
-.table-filter .media .summary {
-	font-size: 14px;
-}
-</style>
   <!-- partial -->
   <div class="main-panel">
     <div class="content-wrapper pb-0">
@@ -131,169 +6,81 @@
         <div class="header-left">
           <h3>RSVP</h3>
         </div>
+        <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
+          <a href="/form/rsvp">
+            <button type="button" class="btn btn-primary mt-2 mt-sm-0 btn-icon-text">
+              <i class="mdi mdi-plus-circle"></i> Tambah Tamu
+            </button>
+          </a>
+        </div>
       </div>
       <div class="row">
         <section class="content">
-          <div class="col-md-8 col-md-offset-2">
+          <div class="col-md-8 offset-md-2">
             <div class="panel panel-default">
               <div class="panel-body">
-                <div class="pull-right">
+                <!-- Search Box -->
+                <div class="mb-3">
+                  <input type="text" id="searchInput" class="form-control" placeholder="Cari nama atau informasi...">
+                </div>
+                <div class="text-end mb-3">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-success btn-filter" data-target="hadir">hadir</button>
-                    <button type="button" class="btn btn-warning btn-filter" data-target="pending">pending</button>
-                    <button type="button" class="btn btn-danger btn-filter" data-target="tidak hadir">tidak hadir</button>
+                    <!-- Tombol Hadir -->
+                    <button type="button" class="btn btn-success btn-filter text-dark"
+                      data-target="accepted">Hadir</button>
+                    <!-- Tombol Pending -->
+                    <button type="button" class="btn btn-warning btn-filter text-dark"
+                      data-target="pending">Pending</button>
+                    <!-- Tombol Tidak Hadir -->
+                    <button type="button" class="btn btn-danger btn-filter text-dark" data-target="declined">Tidak
+                      Hadir</button>
+                    <!-- Tombol Menampilkan Semua -->
+                    <button type="button" class="btn btn-secondary btn-filter text-dark" data-target="semua">Menampilkan
+                      Semua</button>
                   </div>
                 </div>
-                <div class="table-container">
-                  <table class="table table-filter">
-                    <tbody>
-                      <tr data-status="hadir">
-                        <td>
-                          <div class="ckbox">
-                            <input type="checkbox" id="checkbox1">
-                            <label for="checkbox1"></label>
-                          </div>
-                        </td>
-                        <td>
-                          <a href="javascript:;" class="star">
-                            <i class="glyphicon glyphicon-star"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <div class="media">
-                            <a href="#" class="pull-left">
-                              <img src="https://cdn-icons-png.flaticon.com/512/9203/9203764.png"
-                                class="media-photo">
-                            </a>
-                            <div class="media-body">
-                              <span class="media-meta pull-right">januari 24, 2025</span>
-                              <h4 class="title">
-                                hakim
-                                <span class="pull-right hadir">(hadir)</span>
-                              </h4>
-                              <p class="summary">keluarga</p>
+                <div class="row" id="rsvpCards">
+                  <% if (rsvps.length> 0) { %>
+                    <% rsvps.forEach(rsvp=> { %>
+                      <div class="col-md-4 mb-4" data-status="<%= rsvp.status %>" data-name="<%= rsvp.guest_name %>">
+                        <div class="card">
+                          <div class="card-body position-relative">
+                            <!-- Button Delete -->
+                            <form action="/rsvp/delete/<%= rsvp.rsvp_id %>" method="POST"
+                              class="position-absolute top-0 end-0 m-2">
+                              <button type="submit" class="btn btn-danger btn-sm">&times;</button>
+                            </form>
+                            <div class="d-flex align-items-center" onclick="editRsvp('<%= rsvp.rsvp_id %>')"
+                              style="cursor: pointer;">
+                              <div class="flex-grow-1">
+                                <h5 class="card-title">
+                                  <%= rsvp.guest_name %>
+                                </h5>
+                                <p class="card-text">
+                                  <%= rsvp.contact || 'Tidak ada kontak' %>
+                                </p>
+                                <small class="text-muted">
+                                  <%= new Date(rsvp.created_at).toLocaleDateString('id-ID', { day: 'numeric' ,
+                                    month: 'long' , year: 'numeric' }) %>
+                                </small>
+                                <!-- Badge Status -->
+                                <span class="badge 
+                                  <%= rsvp.status === 'accepted' ? 'bg-success' : 
+                                      rsvp.status === 'declined' ? 'bg-danger' : 'bg-warning' %> 
+                                  float-end text-dark">
+                                  <%= rsvp.status.charAt(0).toUpperCase() + rsvp.status.slice(1) %>
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </td>
-                      </tr>
-                      <tr data-status="pending">
-                        <td>
-                          <div class="ckbox">
-                            <input type="checkbox" id="checkbox3">
-                            <label for="checkbox3"></label>
+                        </div>
+                      </div>
+                      <% }); %>
+                        <% } else { %>
+                          <div class="col-12 text-center">
+                            <p>Tidak ada RSVP ditemukan.</p>
                           </div>
-                        </td>
-                        <td>
-                          <a href="javascript:;" class="star">
-                            <i class="glyphicon glyphicon-star"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <div class="media">
-                            <a href="#" class="pull-left">
-                              <img src="https://cdn-icons-png.flaticon.com/512/9203/9203764.png"
-                                class="media-photo">
-                            </a>
-                            <div class="media-body">
-                              <span class="media-meta pull-right">januari 24, 2025</span>
-                              <h4 class="title">
-                                dodi
-                                <span class="pull-right pending">(pending)</span>
-                              </h4>
-                              <p class="summary">keluarga</p>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr data-status="tidak hadir">
-                        <td>
-                          <div class="ckbox">
-                            <input type="checkbox" id="checkbox2">
-                            <label for="checkbox2"></label>
-                          </div>
-                        </td>
-                        <td>
-                          <a href="javascript:;" class="star">
-                            <i class="glyphicon glyphicon-star"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <div class="media">
-                            <a href="#" class="pull-left">
-                              <img src="https://cdn-icons-png.flaticon.com/512/9203/9203764.png"
-                                class="media-photo">
-                            </a>
-                            <div class="media-body">
-                              <span class="media-meta pull-right">januari 24, 2025</span>
-                              <h4 class="title">
-                                suci
-                                <span class="pull-right tidak hadir">(tidak hadir)</span>
-                              </h4>
-                              <p class="summary">teman</p>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr data-status="hadir" class="selected">
-                        <td>
-                          <div class="ckbox">
-                            <input type="checkbox" id="checkbox4" checked>
-                            <label for="checkbox4"></label>
-                          </div>
-                        </td>
-                        <td>
-                          <a href="javascript:;" class="star star-checked">
-                            <i class="glyphicon glyphicon-star"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <div class="media">
-                            <a href="#" class="pull-left">
-                              <img src="https://cdn-icons-png.flaticon.com/512/9203/9203764.png"
-                                class="media-photo">
-                            </a>
-                            <div class="media-body">
-                              <span class="media-meta pull-right">januari 24, 2025</span>
-                              <h4 class="title">
-                                juminten
-                                <span class="pull-right hadir">(hadir)</span>
-                              </h4>
-                              <p class="summary">keluarga</p>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr data-status="pending">
-                        <td>
-                          <div class="ckbox">
-                            <input type="checkbox" id="checkbox5">
-                            <label for="checkbox5"></label>
-                          </div>
-                        </td>
-                        <td>
-                          <a href="javascript:;" class="star">
-                            <i class="glyphicon glyphicon-star"></i>
-                          </a>
-                        </td>
-                        <td>
-                          <div class="media">
-                            <a href="#" class="pull-left">
-                              <img src="https://cdn-icons-png.flaticon.com/512/9203/9203764.png"
-                                class="media-photo">
-                            </a>
-                            <div class="media-body">
-                              <span class="media-meta pull-right">januari 24, 2025</span>
-                              <h4 class="title">
-                                Sumanto
-                                <span class="pull-right pending">(pending)</span>
-                              </h4>
-                              <p class="summary">teman</p>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          <% } %>
                 </div>
               </div>
             </div>
@@ -301,28 +88,47 @@
         </section>
       </div>
     </div>
-    <script>
-      $(document).ready(function () {
+  </div>
 
-$('.star').on('click', function () {
-    $(this).toggleClass('star-checked');
-  });
+  <!-- Script untuk filter RSVP dan pencarian -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const filterButtons = document.querySelectorAll('.btn-filter');
+      const cards = document.querySelectorAll('[data-status]');
+      const searchInput = document.getElementById('searchInput');
 
-  $('.ckbox label').on('click', function () {
-    $(this).parents('tr').toggleClass('selected');
-  });
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const targetStatus = this.getAttribute('data-target');
 
-  $('.btn-filter').on('click', function () {
-    var $target = $(this).data('target');
-    if ($target != 'all') {
-      $('.table tr').css('display', 'none');
-      $('.table tr[data-status="' + $target + '"]').fadeIn('slow');
-    } else {
-      $('.table tr').css('display', 'none').fadeIn('slow');
-    }
-  });
+          cards.forEach(card => {
+            if (targetStatus === 'semua' || card.getAttribute('data-status') === targetStatus) {
+              card.style.display = 'block'; // Tampilkan card
+            } else {
+              card.style.display = 'none'; // Sembunyikan card
+            }
+          });
+        });
+      });
 
-});
-    </script>
-    <!-- content-wrapper ends -->
-    <%- include('footer'); %>
+      searchInput.addEventListener('input', function () {
+        const query = searchInput.value.toLowerCase();
+
+        cards.forEach(card => {
+          const name = card.getAttribute('data-name').toLowerCase();
+          if (name.includes(query)) {
+            card.style.display = 'block'; // Tampilkan card yang cocok
+          } else {
+            card.style.display = 'none'; // Sembunyikan card yang tidak cocok
+          }
+        });
+      });
+    });
+
+    window.editRsvp = function (id) {
+      // Arahkan ke halaman edit RSVP
+      window.location.href = `/rsvp/edit/${id}`;
+    };
+
+
+  </script>

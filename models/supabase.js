@@ -4,7 +4,7 @@ config();  // Load the .env file
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client with your URL and key
-const supabaseUrl = 'https://yjftkgxshnzjqzglwdke.supabase.co';
+const supabaseUrl = 'https://uikfsdqpjarcmazypmns.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 

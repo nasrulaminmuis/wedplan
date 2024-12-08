@@ -1,27 +1,38 @@
 <%- include('../navbar'); %>
-        <!-- partial -->
-        <div class="main-panel">
-          <div class="content-wrapper pb-0">
-            <div class="row">
-              <div style="max-width: 400px; margin: 50px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                <h2 style="text-align: center; margin-bottom: 20px;">Tambah Anggaran</h2>
-                <form>
-                    <div style="margin-bottom: 15px;">
-                        <label for="vendorName" style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Anggaran</label>
-                        <input type="text" id="vendorName" placeholder="fotografer" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px;">
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                      <label for="vendorName" style="display: block; font-weight: bold; margin-bottom: 5px;">Jumlah</label>
-                      <input type="text" id="vendorName" placeholder="fotografer" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px;">
-                  </div>
-                    <div style="margin-bottom: 15px;">
-                      <label for="eventDate" style="display: block; font-weight: bold; margin-bottom: 5px;">Tanggal Pencatatan</label>
-                      <input type="date" id="eventDate" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px;">
-                    </div>
-                    <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: #ffffff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Tambah Anggaran</button>
-                </form>
-            </div>
-            </div>
+<!-- partial -->
+<div class="main-panel">
+  <div class="content-wrapper pb-0">
+    <div class="row">
+      <div style="max-width: 400px; margin: 50px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h2 style="text-align: center; margin-bottom: 20px;"> <%= isEdit ? 'Edit' : 'Tambah' %> Budget</h2>
+        <% if (error) { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="<%= isEdit ? `/dana/update/${dana.budget_id}` : '/dana/create' %>" method="POST">
+          <div style="margin-bottom: 15px;">
+            <label for="budget_name" style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Budget</label>
+            <input type="text" id="budget_name" name="budget_name" class="form-control" value="<%= dana ? dana.budget_name : '' %>" placeholder="Nama Budget" required>
           </div>
-          <!-- content-wrapper ends -->
-<%- include('../footer'); %>          
+          <div style="margin-bottom: 15px;">
+            <label for="total_amount" style="display: block; font-weight: bold; margin-bottom: 5px;">Total Amount</label>
+            <input type="number" id="total_amount" name="total_amount" class="form-control" value="<%= dana ? dana.total_amount : '' %>" placeholder="Total Amount" required step="0.01">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="budget_type" style="display: block; font-weight: bold; margin-bottom: 5px;">Jenis Budget</label>
+            <select id="budget_type" name="budget_type" class="form-control" required>
+              <option value="Masuk" <%= dana && dana.budget_type === 'Masuk' ? 'selected' : '' %>>Masuk</option>
+              <option value="Keluar" <%= dana && dana.budget_type === 'Keluar' ? 'selected' : '' %>>Keluar</option>
+            </select>
+          </div>
+
+          <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: #ffffff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+            <%= isEdit ? 'Update' : 'Tambah' %> Budget
+          </button>
+          <a href="/dana" class="btn btn-light" style="margin-top: 10px; display: block; text-align: center;">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- content-wrapper ends -->
+<%- include('../footer'); %>

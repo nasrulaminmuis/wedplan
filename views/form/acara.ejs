@@ -1,39 +1,38 @@
-<!-- views/form/acara.ejs -->
 <%- include('../navbar'); %>
+<!-- partial -->
 <div class="main-panel">
   <div class="content-wrapper pb-0">
     <div class="row">
-      <div class="col-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title"><%= isEdit ? 'Edit' : 'Tambah' %> Acara</h4>
-            <% if (error) { %>
-              <div class="alert alert-danger"><%= error %></div>
-            <% } %>
-            <form action="<%= isEdit ? `/acara/update/${event.event_id}` : '/acara/create' %>" method="POST" class="forms-sample">
-              <div class="form-group">
-                <label for="event_name">Nama Acara</label>
-                <input type="text" class="form-control" id="event_name" name="event_name" value="<%= event ? event.event_name : '' %>" placeholder="Nama Acara" required>
-              </div>
-              <div class="form-group">
-                <label for="event_date">Tanggal Acara</label>
-                <input type="date" class="form-control" id="event_date" name="event_date" value="<%= event ? event.event_date : '' %>" required>
-              </div>
-              <div class="form-group">
-                <label for="location">Lokasi</label>
-                <input type="text" class="form-control" id="location" name="location" value="<%= event ? event.location : '' %>" placeholder="Lokasi Acara">
-              </div>
-              <div class="form-group">
-                <label for="notes">Catatan</label>
-                <textarea class="form-control" id="notes" name="notes" rows="4"><%= event ? event.notes : '' %></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary me-2"><%= isEdit ? 'Update' : 'Submit' %></button>
-              <a href="/acara" class="btn btn-light">Cancel</a>
-            </form>
+      <div style="max-width: 400px; margin: 50px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h2 style="text-align: center; margin-bottom: 20px;"> <%= isEdit ? 'Edit' : 'Tambah' %> Acara</h2>
+        <% if (error) { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="<%= isEdit ? `/acara/update/${event.event_id}` : '/acara/create' %>" method="POST">
+          <div style="margin-bottom: 15px;">
+            <label for="event_name" style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Acara</label>
+            <input type="text" id="event_name" name="event_name" class="form-control" value="<%= event ? event.event_name : '' %>" placeholder="Nama Acara" required>
           </div>
-        </div>
+          <div style="margin-bottom: 15px;">
+            <label for="event_date" style="display: block; font-weight: bold; margin-bottom: 5px;">Tanggal Acara</label>
+            <input type="date" id="event_date" name="event_date" class="form-control" value="<%= event ? event.event_date : '' %>" required>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="location" style="display: block; font-weight: bold; margin-bottom: 5px;">Lokasi</label>
+            <input type="text" id="location" name="location" class="form-control" value="<%= event ? event.location : '' %>" placeholder="Lokasi Acara">
+          </div>
+          <div style="margin-bottom: 15px;">
+            <label for="notes" style="display: block; font-weight: bold; margin-bottom: 5px;">Catatan</label>
+            <textarea id="notes" name="notes" class="form-control" rows="4"><%= event ? event.notes : '' %></textarea>
+          </div>
+          <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: #ffffff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+            <%= isEdit ? 'Update' : 'Tambah' %> Acara
+          </button>
+          <a href="/acara" class="btn btn-light" style="margin-top: 10px; display: block; text-align: center;">Cancel</a>
+        </form>
       </div>
     </div>
   </div>
 </div>
+<!-- content-wrapper ends -->
 <%- include('../footer'); %>

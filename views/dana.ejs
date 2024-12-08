@@ -1,82 +1,117 @@
 <%- include('navbar'); %>
-  <!-- partial -->
-  <div class="main-panel">
-    <div class="content-wrapper pb-0">
-      <div class="page-header flex-wrap">
-        <div class="header-left">
-          <h3>Anggaran</h3>
-        </div>
-        <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
-          <a href="/form/dana">
-          <button type="button" class="btn btn-success mt-2 mt-sm-0 p-3 me-2">Tambah Pemasukan</button>
-          </a>
-          <a href="/form/dana">
-          <button type="button" class="btn btn-outline-danger mt-2 mt-sm-0 p-3">Tambah Pengeluaran</button>
-          </a>
-          <!-- <button type="button" class="btn btn-primary mt-2 mt-sm-0 btn-icon-text">
-                  <i class="mdi mdi-plus-circle"></i> Tambah Acara </button> -->
-        </div>
+<!-- partial -->
+<div class="main-panel">
+  <div class="content-wrapper pb-0">
+    <div class="page-header flex-wrap">
+      <div class="header-left">
+        <h3>Kelola Anggaran</h3>
       </div>
-      <div class="row">
-        <div class="page-content page-container" id="page-content">
-          <div class="padding">
-            <div class="row container d-flex justify-content-center">
-
-              <div class="col-lg-8 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>Nama Anggaran</th>
-                            <th>Jumlah</th>
-                            <th>Tanggal</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Samso Park</td>
-                            <td>1.000.000</td>
-                            <td>12 May 2017</td>
-                            <td><label class="badge badge-danger">Keluar</label></td>
-                          </tr>
-                          <tr>
-                            <td>Marlo Sanki</td>
-                            <td>2.000.000</td>
-                            <td>15 May 2015</td>
-                            <td><label class="badge badge-success">Masuk</label></td>
-                          </tr>
-                          <tr>
-                            <td>John ryte</td>
-                            <td>3.000.000</td>
-                            <td>14 May 2017</td>
-                            <td><label class="badge badge-success">Masuk</label></td>
-                          </tr>
-                          <tr>
-                            <td>Peter mark</td>
-                            <td>1.500.000</td>
-                            <td>16 May 2017</td>
-                            <td><label class="badge badge-danger">Keluar</label></td>
-                          </tr>
-                          <tr>
-                            <td>Dave</td>
-                            <td>500.000</td>
-                            <td>20 May 2017</td>
-                            <td><label class="badge badge-danger">Keluar</label></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
+      <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
+        <a href="/form/dana">
+          <button type="button" class="btn btn-primary mt-2 mt-sm-0 btn-icon-text">
+            <i class="mdi mdi-plus-circle"></i> Tambah Anggaran
+          </button>
+        </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row container d-flex justify-content-center">
+        <div class="col-lg-8 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <!-- Table for Tabulator -->
+                <div id="anggaran-table"></div> <!-- Placeholder for Tabulator -->
               </div>
-
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- content-wrapper ends -->
-    <%- include('footer'); %>
+  </div>
+  <!-- content-wrapper ends -->
+  <%- include('footer'); %>
+
+  <!-- Tabulator CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.0.7/dist/css/tabulator.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tabulator-tables@5.0.7/dist/js/tabulator.min.js"></script>
+
+  <script>
+    // Fetch the data dynamically from server-side (Supabase)
+    const tableData = JSON.parse('<%- JSON.stringify(danas) %>');
+
+    // Tabulator Columns Configuration
+    const columns = [
+      { 
+        title: "Nama Anggaran", 
+        field: "budget_name", 
+        headerFilter: "input", 
+        hozAlign: "center" // Center the column
+      },
+      { 
+        title: "Jumlah", 
+        field: "total_amount", 
+        headerFilter: "input", 
+        hozAlign: "center" // Center the column
+      },
+      { 
+        title: "Tanggal", 
+        field: "created_at", 
+        headerFilter: "input",
+        formatter: function(cell) {
+          // Simple Date Format: YYYY-MM-DD
+          const date = new Date(cell.getValue());
+          return date.toISOString().split('T')[0]; // Extracts the date part
+        },
+        hozAlign: "center" // Center the column
+      },
+      {
+        title: "Tipe Anggaran", 
+        field: "budget_type",
+        formatter: function(cell, formatterParams, onRendered) {
+          const budgetType = cell.getRow().getData().budget_type;
+          let buttonClass = "btn-info"; // Default button style
+
+          if (budgetType === "Masuk") {
+            buttonClass = "btn-success"; // Green button for "Masuk"
+          } else if (budgetType === "Keluar") {
+            buttonClass = "btn-danger"; // Red button for "Keluar"
+          }
+
+          return `<div class="btn ${buttonClass}">${cell.getValue()}</div>`;
+        },
+        hozAlign: "center" // Center the column
+      },
+      {
+        title: "Aksi", 
+        field: "budget_id", 
+        formatter: function(cell, formatterParams, onRendered) {
+
+          return `
+            <form action="/dana/delete/${cell.getValue()}" method="POST" style="display: inline;">
+              <a href="/dana/edit/${cell.getValue()}" class="btn btn-info btn-sm me-2">
+                <i class="mdi mdi-pencil"></i>
+              </a>
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">
+                <i class="mdi mdi-delete"></i>
+              </button>
+            </form>
+          `;
+        },
+        hozAlign: "center" // Center the column
+      }
+    ];
+
+    // Initializing the Tabulator instance
+    new Tabulator("#anggaran-table", {
+      data: tableData, // Data for the table
+      columns: columns, // Column configuration
+      layout: "fitColumns", // Make the columns fit the width of the table
+      responsiveLayout: "hide", // Responsive layout, hide columns on smaller screens
+      tooltips: true, // Enable tooltips on hover
+      pagination: "local", // Enable pagination
+      paginationSize: 5, // Items per page
+      paginationSizeSelector: [5, 10, 20] // Pagination size options
+    });
+  </script>
+</div>
