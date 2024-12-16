@@ -1,121 +1,95 @@
 import { supabase } from '../models/supabase.js';
 
 export const createKatalog = async (req, res) => {
-  const { katalog_name, katalog_date, location, notes } = req.body;
-  
+  const { vendor_name, category, contact_info, alamat } = req.body;
+
+
+
+  // Validasi: Pastikan semua field wajib diisi
+  if (!vendor_name || !category || !contact_info || !alamat) {
+    return res.status(400).json({
+      success: false,
+      message: 'Semua field wajib diisi.'
+    });
+  }
+
   try {
-    const { error } = await supabase
-      .from('katalogs')
+    // Menambahkan vendor baru ke database menggunakan Supabase
+    const { data, error } = await supabase
+      .from('manualvendors')
       .insert([{
         user_id: req.user.id,
-        katalog_name,
-        katalog_date,
-        location,
-        notes
+        vendor_name,
+        category,
+        contact_info,
+        alamat
       }]);
 
-    if (error) throw error;
-    res.redirect('/katalog');
+    if (error) {
+      throw error; // Lemparkan error jika ada
+    }
+
+    // Jika berhasil, kirimkan response sukses
+    res.status(200).json({
+      success: true,
+      message: 'Vendor berhasil ditambahkan.',
+      data: data
+    });
+
   } catch (error) {
-    res.render('form/katalog', { 
-      error: error.message,
-      user: req.user,
-      katalog: req.body
+    // Kirimkan pesan error jika ada kesalahan
+    res.status(500).json({
+      success: false,
+      message: `Terjadi kesalahan: ${error.message}`
     });
   }
 };
 
+
+// Mendapatkan data vendor berdasarkan kategori
 export const getKatalogs = async (req, res) => {
   try {
-    const { data: katalogs, error } = await supabase
-      .from('katalogs')
-      .select('*')
-      .eq('user_id', req.user.id)
-      .order('katalog_date', { ascending: true });
+    // Daftar kategori yang ada
+    const categories = ['catering', 'photography', 'decoration', 'venue', 'others'];
 
-    if (error) throw error;
+    // Ambil data vendor untuk setiap kategori
+    const categoryVendors = await Promise.all(categories.map(async (category) => {
+      const { data: vendors, error } = await supabase
+        .from('vendors')
+        .select('*') // Ambil field yang diperlukan
+        .eq('category', category);
 
-    const { data: userData } = await supabase
+      if (error) throw error;
+
+      // Mengambil data vendor dan mengelompokkan berdasarkan kategori
+      return {
+        title: category.charAt(0).toUpperCase() + category.slice(1), // Mengubah kategori menjadi format judul
+        vendors: vendors.map(vendor => ({
+          id: vendor.id,
+          vendor_name: vendor.vendor_name,
+          image: vendor.image,
+          contact_info: vendor.contact_info,  // Menambahkan contact_info
+          alamat: vendor.alamat
+        }))
+      };
+    }));
+
+    // Mendapatkan data user (jika diperlukan)
+    const { data: userData, error } = await supabase
       .from('users')
       .select('*')
       .eq('user_id', req.user.id)
       .single();
 
-    res.render('katalog', { 
-      katalogs, 
-      user: userData,
-      error: null 
-    });
-  } catch (error) {
-    res.render('katalog', { 
-      katalogs: [], 
-      user: req.user,
-      error: error.message 
-    });
-  }
-};
-
-export const getKatalog = async (req, res) => {
-  try {
-    const { data: katalog, error } = await supabase
-      .from('katalogs')
-      .select('*')
-      .eq('katalog_id', req.params.id)
-      .eq('user_id', req.user.id)
-      .single();
-
     if (error) throw error;
 
-    res.render('form/katalog', {
-      user: req.user,
-      katalog,
-      error: null,
-      isEdit: true
-    });
+    // Kirim data ke tampilan (render view)
+    res.render('katalog', { categories: categoryVendors, user: userData });
+
   } catch (error) {
-    res.redirect('/katalog');
+    console.error('Error fetching vendors:', error);
+    res.status(500).send('Error fetching data');
   }
 };
 
-export const updateKatalog = async (req, res) => {
-  const { katalog_name, katalog_date, location, notes } = req.body;
-  const katalogId = req.params.id;
 
-  try {
-    const { error } = await supabase
-      .from('katalogs')
-      .update({
-        katalog_name,
-        katalog_date,
-        location,
-        notes
-      })
-      .eq('katalog_id', katalogId)
-      .eq('user_id', req.user.id);
-
-    if (error) throw error;
-    res.redirect('/katalog');
-  } catch (error) {
-    res.render('form/katalog', {
-      error: error.message,
-      user: req.user,
-      katalog: req.body,
-      isEdit: true
-    });
-  }
-};
-
-export const deleteKatalog = async (req, res) => {
-  try {
-    const { error } = await supabase
-      .from('katalogs')
-      .delete()
-      .eq('katalog_id', req.params.id)
-      .eq('user_id', req.user.id);
-
-    if (error) throw error;
-    res.redirect('/katalog');
-  } catch (error) {
-    res.redirect('/katalog');
-  }
-};

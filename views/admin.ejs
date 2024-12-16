@@ -1,0 +1,110 @@
+<%- include('navbar'); %>
+<!-- partial -->
+<div class="main-panel">
+  <div class="content-wrapper pb-0">
+    <div class="page-header flex-wrap">
+      <div class="header-left">
+        <h3>Kelola Vendor</h3>
+      </div>
+      <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
+        <a href="/form/vendoradmin">
+          <button type="button" class="btn btn-primary mt-2 mt-sm-0 btn-icon-text">
+            <i class="mdi mdi-plus-circle"></i> Tambah Vendor
+          </button>
+        </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row container d-flex justify-content-center">
+        <div class="col-lg-8 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <!-- Table for Tabulator -->
+                <div id="vendor-table"></div> <!-- Placeholder for Tabulator -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- content-wrapper ends -->
+  <%- include('footer'); %>
+</div>
+
+<!-- Tabulator CDN -->
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.0.7/dist/css/tabulator.min.css" rel="stylesheet">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tabulator-tables@5.0.7/dist/js/tabulator.min.js"></script>
+
+<script>
+  // Contoh data vendor dari Supabase (dapat digantikan dengan data dinamis dari server)
+  const vendorData = JSON.parse('<%- JSON.stringify(vendors) %>');
+  console.log(vendorData)
+  // Tabulator Columns Configuration
+  const columns = [
+    { 
+      title: "Vendor Name", 
+      field: "vendor_name", 
+      headerFilter: "input",
+      hozAlign: "center" 
+    },
+    { 
+      title: "Category", 
+      field: "category", 
+      headerFilter: "input",
+      hozAlign: "center" 
+    },
+    { 
+      title: "Contact Info", 
+      field: "contact_info", 
+      headerFilter: "input",
+      hozAlign: "center" 
+    },
+    { 
+      title: "Alamat", 
+      field: "alamat", 
+      headerFilter: "input",
+      hozAlign: "center"
+    },
+    { 
+      title: "Tanggal", 
+      field: "created_at", 
+      hozAlign: "center",
+      formatter: function(cell) {
+          // Simple Date Format: YYYY-MM-DD
+          const date = new Date(cell.getValue());
+          return date.toISOString().split('T')[0]; // Extracts the date part
+        }, // Format timestamp
+    },
+    {
+      title: "Actions", 
+      field: "vendor_id", 
+      hozAlign: "center",
+      formatter: (cell) => {
+        return `
+            <form action="/admin/delete/${cell.getValue()}" method="POST" style="display: inline;">
+              <a href="/admin/edit/${cell.getValue()}" class="btn btn-info btn-sm me-2">
+                <i class="mdi mdi-pencil"></i>
+              </a>
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">
+                <i class="mdi mdi-delete"></i>
+              </button>
+            </form>
+        `;
+      }
+    }
+  ];
+
+  // Initializing the Tabulator instance
+  new Tabulator("#vendor-table", {
+    data: vendorData, // Data for the table
+    columns: columns, // Column configuration
+    layout: "fitColumns", // Make the columns fit the width of the table
+    responsiveLayout: "hide", // Responsive layout, hide columns on smaller screens
+    tooltips: true, // Enable tooltips on hover
+    pagination: "local", // Enable pagination
+    paginationSize: 5, // Items per page
+    paginationSizeSelector: [5, 10, 20], // Pagination size options
+  });
+</script>

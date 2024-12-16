@@ -1,0 +1,53 @@
+<%- include('navbar'); %>
+
+<div class="main-panel">
+  <div class="content-wrapper pb-0">
+    <div class="container mt-5">
+      <% if (undangan) { %>
+        <!-- Menampilkan detail undangan jika undangan ada -->
+        <div class="invitation">
+          <h1>Undangan: <%= undangan.nama_pria %> & <%= undangan.nama_wanita %></h1>
+          <p><%= undangan.template_url %></p>
+          
+          <!-- Tombol salin URL template -->
+          <button id="copyButton" class="btn btn-secondary" onclick="copyToClipboard()">Salin URL Template</button>
+          
+          <!-- Menambahkan field undangan lainnya sesuai kebutuhan -->
+        </div>
+      <% } else { %>
+        <!-- Jika undangan tidak ada, tampilkan tombol untuk tambah undangan -->
+        <div class="no-invitation">
+          <p>Anda belum memiliki undangan.</p>
+          <a href="/undangan/create" class="btn btn-primary">Tambah Undangan Baru</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('footer'); %>
+<% if (undangan) { %>
+<script>
+  function copyToClipboard() {
+    // Ambil URL template dari elemen <p>
+    const templateUrl = "<%= undangan.template_url %>";
+    
+    // Buat elemen input untuk menyalin URL ke clipboard
+    const input = document.createElement('input');
+    input.value = templateUrl;
+    document.body.appendChild(input);
+    
+    // Pilih dan salin isi input
+    input.select();
+    document.execCommand('copy');
+    
+    // Hapus elemen input setelah digunakan
+    document.body.removeChild(input);
+    
+    // Memberikan umpan balik ke pengguna
+    alert('URL template berhasil disalin!');
+  }
+</script>
+<% } else { %>
+  <script></script>
+<% } %>

@@ -1,0 +1,74 @@
+<%- include('../navbar'); %>
+<!-- partial -->
+<div class="main-panel">
+  <div class="content-wrapper pb-0">
+    <div class="row">
+      <div style="max-width: 400px; margin: 50px auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h2 style="text-align: center; margin-bottom: 20px;">
+          <%= isEdit ? 'Edit' : 'Tambah' %> Vendor
+        </h2>
+
+        <% if (error) { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <form method="POST" action="<%= isEdit ? `/admin/update/${vendor.vendor_id}` : '/admin/create' %>" enctype="multipart/form-data">
+          <!-- Nama Vendor -->
+          <div style="margin-bottom: 15px;">
+            <label for="vendorName" style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Vendor</label>
+            <input type="text" name="vendor_name" id="vendorName" placeholder="Fotografer" 
+              value="<%= vendor ? vendor.vendor_name : '' %>" 
+              style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px;" required>
+          </div>
+        
+          <!-- Kategori Vendor -->
+          <div style="margin-bottom: 15px;">
+            <label for="vendorCategory" style="display: block; font-weight: bold; margin-bottom: 5px;">Kategori</label>
+            <select name="category" id="vendorCategory" style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px;" required>
+              <option value="catering" <%= vendor && vendor.category === 'catering' ? 'selected' : '' %>>Catering</option>
+              <option value="photography" <%= vendor && vendor.category === 'photography' ? 'selected' : '' %>>Fotografi</option>
+              <option value="decoration" <%= vendor && vendor.category === 'decoration' ? 'selected' : '' %>>Dekorasi</option>
+              <option value="venue" <%= vendor && vendor.category === 'venue' ? 'selected' : '' %>>Venue</option>
+              <option value="others" <%= vendor && vendor.category === 'others' ? 'selected' : '' %>>Lainnya</option>
+            </select>
+          </div>
+        
+          <!-- Alamat Vendor -->
+          <div style="margin-bottom: 15px;">
+            <label for="vendorAddress" style="display: block; font-weight: bold; margin-bottom: 5px;">Alamat</label>
+            <input type="text" name="alamat" id="vendorAddress" placeholder="Sleman" 
+              value="<%= vendor ? vendor.alamat : '' %>" 
+              style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px;" required>
+          </div>
+        
+          <!-- Kontak Vendor -->
+          <div style="margin-bottom: 15px;">
+            <label for="vendorContact" style="display: block; font-weight: bold; margin-bottom: 5px;">Kontak</label>
+            <input type="text" name="contact_info" id="vendorContact" placeholder="083626168826" 
+              value="<%= vendor ? vendor.contact_info : '' %>" 
+              style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px;" required>
+          </div>
+        
+          <!-- Menampilkan Gambar Lama jika Ada -->
+          <% if (vendor && vendor.image) { %>
+            <div style="margin-bottom: 15px;">
+              <label style="display: block; font-weight: bold; margin-bottom: 5px;">Gambar Lama</label>
+              <img src="<%= vendor.image %>" alt="Gambar Vendor" style="max-width: 100%; height: auto; border-radius: 5px;">
+            </div>
+          <% } %>
+          
+          <!-- Upload Gambar (Opsional) -->
+          <div style="margin-bottom: 15px;">
+            <label for="vendorImage" style="display: block; font-weight: bold; margin-bottom: 5px;">Gambar Vendor</label>
+            <input type="file" name="image" id="vendorImage">
+          </div>
+        
+          <!-- Tombol Submit -->
+          <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: #ffffff; border: none; border-radius: 5px; cursor: pointer;">
+            <%= isEdit ? 'Simpan Perubahan' : 'Tambah Vendor' %>
+          </button>
+        </form>        
+      </div>
+    </div>
+  </div>
+</div>

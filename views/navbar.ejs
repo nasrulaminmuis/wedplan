@@ -23,7 +23,6 @@
   </head>
   <body>
     <div class="container-scroller">
-      <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item nav-profile border-bottom">
@@ -37,45 +36,62 @@
               </div>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/dashboard">
-              <i class="mdi mdi-compass-outline menu-icon"></i>
-              <span class="menu-title">Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/acara">
-              <i class="mdi mdi-calendar-blank-outline menu-icon"></i>
-              <span class="menu-title">Acara</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/dana">
-              <i class="mdi mdi-cash-multiple menu-icon"></i>
-              <span class="menu-title">Anggaran</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/vendor">
-              <i class="mdi mdi-domain menu-icon"></i>
-              <span class="menu-title">Vendor</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/rsvp">
-              <i class="mdi mdi-calendar-question menu-icon"></i>
-              <span class="menu-title">rsvp</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/katalog">
-              <i class="mdi mdi-domain menu-icon"></i>
-              <span class="menu-title">katalog</span>
-            </a>
-          </li>
+
+          <!-- If the user is admin, show only the Vendor menu -->
+          <% if (user.name === 'admin') { %>
+            <li class="nav-item">
+              <a class="nav-link" href="<%= user.name === 'admin' ? '/admin' : '/vendor' %>">
+                <i class="mdi mdi-domain menu-icon"></i>
+                <span class="menu-title">Vendor</span>
+              </a>
+            </li>
+          <% } else { %>
+            <!-- If the user is not admin, show other menus -->
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">
+                <i class="mdi mdi-compass-outline menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/acara">
+                <i class="mdi mdi-calendar-blank-outline menu-icon"></i>
+                <span class="menu-title">Acara</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/dana">
+                <i class="mdi mdi-cash-multiple menu-icon"></i>
+                <span class="menu-title">Anggaran</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/vendor">
+                <i class="mdi mdi-domain menu-icon"></i>
+                <span class="menu-title">Vendor</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/rsvp">
+                <i class="mdi mdi-calendar-question menu-icon"></i>
+                <span class="menu-title">RSVP</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/katalog">
+                <i class="mdi mdi-domain menu-icon"></i>
+                <span class="menu-title">Katalog</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/undangan">
+                <i class="mdi mdi-email menu-icon"></i>
+                <span class="menu-title">Undangan</span>
+              </a>
+            </li>
+          <% } %>
         </ul>
       </nav>
-      <!-- partial -->
       <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_settings-panel.html -->
         <div id="settings-trigger"><i class="mdi mdi-settings"></i></div>

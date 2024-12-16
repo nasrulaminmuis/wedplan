@@ -1,24 +1,175 @@
 <%- include('navbar'); %>
-        <!-- partial -->
-        <div class="main-panel">
-          <div class="content-wrapper pb-0">
-            <div class="page-header flex-wrap">
-              <div class="header-left">
-                <h3>Katalog</h3>
-              </div>
-            </div>
-            <div class="row">
-              <h4>Gedung</h4>
-              <%- include('partial/kartuvendor'); %>
-            </div>
-            <div class="row">
-              <h4>Fotografer</h4>
-              <%- include('partial/kartuvendor'); %>
-            </div>
-            <div class="row">
-              <h4>udangan digital</h4>
-              <%- include('partial/kartuvendor'); %>
-            </div>
+  <!-- partial -->
+  <div class="main-panel">
+    <div class="content-wrapper pb-0">
+      <div class="page-header flex-wrap">
+        <div class="header-left">
+          <h3>Katalog</h3>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Displaying Vendors for Categories -->
+        <% categories.forEach(category=> { %>
+          <div class="col-12">
+            <h4>
+              <%= category.title %>
+            </h4>
           </div>
-          <!-- content-wrapper ends -->
-<%- include('footer'); %>          
+          <div class="row">
+            <% category.vendors.forEach(vendor=> { %>
+              <div class="col-sm-4 stretch-card grid-margin">
+                <div class="card" data-bs-toggle="modal" data-bs-target="#vendorModal<%= vendor.id %>"
+                  data-vendorid="<%= vendor.id %>" data-vendorname="<%= vendor.vendor_name %>"
+                  data-category="<%= category.title %>" data-contact="<%= vendor.contact_info %>"
+                  data-address="<%= vendor.alamat %>">
+                  <div class="card-body p-0">
+                    <img class="img-fluid w-100" src="<%= vendor.image %>" alt="<%= vendor.vendor_name %>" />
+                  </div>
+                  <div class="card-body px-3 text-dark">
+                    <div class="d-flex justify-content-between">
+                      <p class="text-muted font-13 mb-0">
+                        <%= category.title %>
+                      </p>
+                      <i class="mdi mdi-heart-outline"></i>
+                    </div>
+                    <h5 class="font-weight-semibold">
+                      <%= vendor.vendor_name %>
+                    </h5>
+                    <p class="text-muted mb-1">Kontak: <%= vendor.contact_info %>
+                    </p>
+                    <p class="text-muted mb-1">Alamat: <%= vendor.alamat %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal for Vendor -->
+              <div class="modal fade" id="vendorModal<%= vendor.id %>" tabindex="-1"
+                aria-labelledby="vendorModalLabel<%= vendor.id %>" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="vendorModalLabel<%= vendor.id %>">Tambah Vendor - <%=
+                          vendor.vendor_name %>
+                      </h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p><strong>Kontak:</strong> <span id="contactInfo<%= vendor.id %>">
+                          <%= vendor.contact_info %>
+                        </span></p>
+                      <p><strong>Alamat:</strong> <span id="vendorAddress<%= vendor.id %>">
+                          <%= vendor.alamat %>
+                        </span></p>
+                      <button class="btn btn-primary" onclick="addVendor('<%= vendor.id %>')">Tambahkan Vendor</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% }); %>
+          </div>
+          <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var modalId = card.getAttribute('data-bs-target'); // Ambil id modal
+        var vendorName = card.getAttribute('data-vendorname');
+        var category = card.getAttribute('data-category'); // Ambil kategori dari atribut data-category
+        var contactInfo = card.getAttribute('data-contact');
+        var address = card.getAttribute('data-address');
+        var vendorId = card.getAttribute('data-vendorid'); // Ambil vendor ID
+
+        // Mengupdate konten modal sesuai dengan vendor yang dipilih
+        var modal = document.querySelector(modalId);
+        var modalTitle = modal.querySelector('.modal-title');
+        modalTitle.textContent = 'Tambah Vendor - ' + vendorName;
+
+        var contactInfoElement = modal.querySelector('#contactInfo' + vendorId);
+        contactInfoElement.textContent = contactInfo;
+
+        var addressElement = modal.querySelector('#vendorAddress' + vendorId);
+        addressElement.textContent = address;
+
+        // Simpan kategori sebagai data dalam modal (ini bisa digunakan untuk pengiriman)
+        modal.setAttribute('data-category', category); // Menyimpan kategori di dalam modal
+
+        // Menambahkan listener agar hanya melakukan addVendor setelah modal sepenuhnya terbuka
+        modal.addEventListener('shown.bs.modal', function () {
+          const button = modal.querySelector('.btn-primary');
+          button.onclick = function () {
+            addVendor(vendorId);  // Panggil addVendor dengan vendorId yang tepat
+          };
+        });
+      });
+    });
+
+    function addVendor(vendorId) {
+      const modal = document.querySelector(`#vendorModal${vendorId}`);
+
+      // Pastikan modal ditemukan sebelum melanjutkan
+      if (!modal) {
+        console.error('Modal tidak ditemukan!');
+        return; // Keluar dari fungsi jika modal tidak ditemukan
+      }
+
+      // Ambil data dari modal
+      const vendor_name = modal.querySelector('.modal-title').textContent.split(' - ')[1]; // Ambil nama vendor dari judul modal
+      const category = modal.getAttribute('data-category'); // Ambil kategori langsung dari atribut data-category di modal
+      const contact_info = modal.querySelector(`#contactInfo${vendorId}`).textContent; // Ambil kontak dari modal
+      const alamat = modal.querySelector(`#vendorAddress${vendorId}`).textContent; // Ambil alamat dari modal
+
+      // Debugging: Periksa apakah semua data sudah terisi
+      console.log("Vendor Name:", vendor_name);
+      console.log("Category:", category);
+      console.log("Contact Info:", contact_info);
+      console.log("Alamat:", alamat);
+
+      // Validasi jika ada field yang kosong
+      if (!vendor_name || !category || !contact_info || !alamat) {
+        console.error("Data tidak lengkap!");
+        alert("Data vendor tidak lengkap!");
+        return; // Hentikan jika ada data yang kosong
+      }
+
+      // Membuat objek data untuk dikirim ke backend
+      const data = {
+        vendor_name: vendor_name,
+        category: category,
+        contact_info: contact_info,
+        alamat: alamat
+      };
+
+      // Menggunakan fetch untuk mengirim data ke backend
+      fetch('/createKatalog', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(data)  // Mengirimkan data dalam format JSON
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Jika sukses, tutup modal dan beri feedback
+            alert('Vendor berhasil ditambahkan');
+            // Reload halaman atau lakukan sesuatu untuk memperbarui tampilan
+            location.reload();
+          } else {
+            // Jika ada error
+            alert('Terjadi kesalahan: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Terjadi kesalahan saat menambahkan vendor');
+        });
+    }
+
+  </script>
+
+  <%- include('footer'); %>

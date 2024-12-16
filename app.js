@@ -12,10 +12,13 @@ import { createEvent, getEvents, deleteEvent, updateEvent, getEvent } from './co
 import { createDana, getDanas, deleteDana, updateDana, getDana } from './controllers/danaController.js';
 // Controller untuk Vendor
 import { createVendor, getVendors, deleteVendor, updateVendor, getVendor } from './controllers/vendorController.js';
+import { createVendorAdmin, getVendorsAdmin, deleteVendorAdmin, updateVendorAdmin, getVendorAdmin } from './controllers/vendorAdminController.js';
 // Controller untuk RSVP
 import { createRsvp, getRsvps, deleteRsvp, updateRsvp, getRsvp } from './controllers/rsvpController.js';
 // Controller untuk Katalog
-import { createKatalog, getKatalogs, deleteKatalog, updateKatalog, getKatalog } from './controllers/katalogController.js';
+import { createKatalog,getKatalogs } from './controllers/katalogController.js';
+import { getUndangan , createUndangan} from './controllers/undanganController.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,15 +55,22 @@ app.get("/dashboard", requireAuth, async (req, res) => {
       .select('*')
       .eq('user_id', req.user.id)
       .single();
-      
+
     if (error) throw error;
-    
+
     res.render('dashboard', { user: userData });
   } catch (error) {
     console.error('Error fetching user data:', error);
     res.redirect('/login');
   }
 });
+
+// Vendor Routes
+app.get('/admin', requireAuth, getVendorsAdmin);
+app.post('/admin/create', requireAuth, createVendorAdmin);
+app.post('/admin/delete/:id', requireAuth, deleteVendorAdmin);
+app.get('/admin/edit/:id', requireAuth, getVendorAdmin);
+app.post('/admin/update/:id', requireAuth, updateVendorAdmin);
 
 // Acara Routes
 app.get('/acara', requireAuth, getEvents);
@@ -93,56 +103,168 @@ app.post('/rsvp/update/:id', requireAuth, updateRsvp);
 // Katalog Routes
 app.get('/katalog', requireAuth, getKatalogs);
 app.post('/katalog/create', requireAuth, createKatalog);
-app.post('/katalog/delete/:id', requireAuth, deleteKatalog);
-app.get('/katalog/edit/:id', requireAuth, getKatalog);
-app.post('/katalog/update/:id', requireAuth, updateKatalog);
+
 
 // Form Routes
-// Form Routes
-app.get('/form/acara', requireAuth, (req, res) => {
-  res.render('form/acara', { 
-    user: req.user, 
-    error: null, 
+app.get('/form/acara', requireAuth, async (req, res) => {
+  const { data: userData, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+
+    if (error) throw error;
+  res.render('form/acara', {
+    user: userData,
+    error: null,
     event: null,  // Entitas baru
     isEdit: false // Menandakan form ini untuk create (bukan edit)
   });
 });
 
-app.get("/form/dana", requireAuth, (req, res) => {
-  res.render('form/dana', { 
-    user: req.user, 
-    error: null, 
+app.get("/form/dana", requireAuth, async (req, res) => {
+  const { data: userData, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+
+    if (error) throw error;
+  res.render('form/dana', {
+    user: userData,
+    error: null,
     dana: null,   // Entitas baru
     isEdit: false // Form untuk create dana
   });
 });
 
-app.get("/form/vendor", requireAuth, (req, res) => {
-  res.render('form/vendor', { 
-    user: req.user, 
-    error: null, 
+app.get("/form/vendor", requireAuth, async (req, res) => {
+  const { data: userData, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+
+    if (error) throw error;
+
+  res.render('form/vendor', {
+    user: userData,
+    error: null,
     vendor: null, // Entitas baru
     isEdit: false // Form untuk create vendor
   });
 });
 
-app.get("/form/rsvp", requireAuth, (req, res) => {
-  res.render('form/rsvp', { 
-    user: req.user, 
-    error: null, 
+app.get("/form/vendoradmin", requireAuth, async (req, res) => {
+  const { data: userData, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+
+    if (error) throw error;
+  res.render('form/vendoradmin', {
+    user: userData,
+    error: null,
+    vendor: null, // Entitas baru
+    isEdit: false // Form untuk create vendor
+  });
+});
+
+app.get("/form/rsvp", requireAuth,async (req, res) => {
+  const { data: userData, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+
+    if (error) throw error;
+  res.render('form/rsvp', {
+    user: userData,
+    error: null,
     rsvp: null,   // Entitas baru
     isEdit: false // Form untuk create rsvp
   });
 });
 
-app.get("/form/katalog", requireAuth, (req, res) => {
-  res.render('form/katalog', { 
-    user: req.user, 
-    error: null, 
+app.get("/form/katalog", requireAuth, async (req, res) => {
+  const { data: userData, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+
+    if (error) throw error;
+  res.render('form/katalog', {
+    user: userData,
+    error: null,
     katalog: null, // Entitas baru
     isEdit: false  // Form untuk create katalog
   });
 });
+
+app.post("/createKatalog",requireAuth,createKatalog)
+// Route untuk membuat atau mengupdate undangan
+// Rute untuk halaman undangan
+app.get("/undangan", requireAuth, getUndangan);
+// Menampilkan form tambah undangan
+app.get('/undangan/create',requireAuth,async (req, res) => {
+  const { data: userData} = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .single();
+  res.render('undanganform', { user: userData });
+});
+// Menyimpan undangan baru ke Supabase
+app.post('/undangan',requireAuth,createUndangan);
+
+app.get("/undangandigital/:uuid", async (req, res) => {
+  const { uuid } = req.params; // Mendapatkan UUID dari URL
+
+  try {
+    // Mengambil data pengguna berdasarkan UUID dari parameter URL
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', uuid)  // Mencari pengguna berdasarkan UUID dari parameter URL
+      .single();
+
+    if (userError) throw userError;  // Jika ada error saat mengambil data pengguna
+
+    // Mengambil data undangan berdasarkan user_id yang sesuai
+    const { data: undangan, error: undanganError } = await supabase
+      .from('catalog_invitations')
+      .select('*')
+      .eq('user_id', uuid)  // Mencari undangan berdasarkan UUID pengguna
+      .single();  
+
+    if (undanganError) throw undanganError;  // Jika ada error saat mengambil data undangan
+
+    // Mengirim data ke template untuk ditampilkan
+    res.render('undangan/template', {
+      user: userData,
+      undangan,
+      error: null,
+      katalog: null,  // Entitas baru
+      isEdit: false  // Form untuk create katalog
+    });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    res.render('undangan/template', {
+      user: null,
+      undangan: null,
+      error: 'Terjadi kesalahan saat memuat data undangan.',
+      katalog: null,
+      isEdit: false
+    });
+  }
+});
+
+
+
+
 
 
 // Server setup
