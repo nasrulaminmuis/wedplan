@@ -67,7 +67,7 @@ export const createVendorAdmin = async (req, res) => {
 
       res.redirect('/admin');
     } catch (error) {
-      res.render('form/vendor', {
+      res.render('form/vendoradmin', {
         error: error.message,
         user: req.user,
         vendor: req.body,
