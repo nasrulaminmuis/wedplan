@@ -43,11 +43,20 @@
                         <li><a href="./contact.html">Kontak</a></li>
                     </ul>
                 </nav>
-                <a href="/login" class="primary-btn top-btn"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk</a>
+                <% if (!user) { %>
+                    <a href="/login" class="primary-btn top-btn">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk
+                    </a>
+                    <% } else { %>
+                        <a href="/logout" class="primary-btn top-btn">
+                            <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                        </a>
+                        <% } %>
             </div>
             <div id="mobile-menu-wrap"></div>
         </div>
     </header>
+
 
     <section class="hero-section set-bg" data-setbg="landing/img/hero.jpg">
         <div class="container">
@@ -129,7 +138,7 @@
         </div>
     </section>
 
-    <section class="pricing-section set-bg spad" data-setbg="landing/img/pricing-bg.jpg">
+    <section class="pricing-section set-bg spad" data-setbg="landing/img/pricing-bg.jpg" id="bayar">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -139,7 +148,9 @@
                     </div>
                 </div>
             </div>
+
             <div class="row justify-content-center">
+                <!-- Paket Bronze -->
                 <div class="col-lg-4 col-md-8">
                     <div class="price-item">
                         <h4>Bronze</h4>
@@ -152,9 +163,12 @@
                             <li>Unlimited Kontak Vendor</li>
                             <li>Durasi : 1 Bulan</li>
                         </ul>
-                        <a href="#" class="price-btn">Pilih Paket</a>
+                        <a href="#" data-package="Bronze" data-amount="50000" class="price-btn pilih-paket">Pilih
+                            Paket</a>
                     </div>
                 </div>
+
+                <!-- Paket Platinum -->
                 <div class="col-lg-4 col-md-8">
                     <div class="price-item top-rated">
                         <div class="tr-tag">
@@ -170,9 +184,12 @@
                             <li>Unlimited Kontak Vendor</li>
                             <li>Durasi : 1 Bulan</li>
                         </ul>
-                        <a href="#" class="price-btn">Pilih Paket</a>
+                        <a href="#" data-package="Platinum" data-amount="100000" class="price-btn pilih-paket">Pilih
+                            Paket</a>
                     </div>
                 </div>
+
+                <!-- Paket Custom -->
                 <div class="col-lg-4 col-md-8">
                     <div class="price-item">
                         <h4>Custom</h4>
@@ -183,12 +200,13 @@
                             <li>Bebas atur sesuai kebutuhan dan budget</li>
                             <li>Durasi Custom</li>
                         </ul>
-                        <a href="#" class="price-btn">Pilih Paket</a>
+                        <a href="#" class="price-btn">Hubungi Kami</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <section class="contact-section spad">
         <div class="container">
@@ -314,6 +332,88 @@
     <script src="landing/js/jquery.slicknav.js"></script>
     <script src="landing/js/owl.carousel.min.js"></script>
     <script src="landing/js/main.js"></script>
+    // Di frontend, update script payment
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const buttons = document.querySelectorAll('.pilih-paket');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', async (event) => {
+                    event.preventDefault();
+                    button.disabled = true;
+                    button.textContent = 'Memproses...';
+
+                    try {
+                        const packageName = button.dataset.package;
+                        const amount = button.dataset.amount;
+
+                        const response = await fetch('/create-transaction', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ packageName, amount })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.token) {
+                            window.snap.pay(result.token, {
+                                onSuccess: async function (result) {
+                                    console.log('success', result);
+                                    try {
+                                        // Kirim notifikasi ke backend
+                                        const notifResponse = await fetch('/midtrans-notification', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(result)
+                                        });
+
+                                        if (notifResponse.ok) {
+                                            window.location.href = '/dashboard';
+                                        } else {
+                                            throw new Error('Gagal memproses notifikasi');
+                                        }
+                                    } catch (error) {
+                                        console.error('Error:', error);
+                                        alert('Pembayaran berhasil tapi gagal memproses data. Silakan hubungi admin.');
+                                    }
+                                },
+                                onPending: function (result) {
+                                    console.log('pending', result);
+                                    window.location.href = '/pending';
+                                },
+                                onError: function (result) {
+                                    console.error('payment failed', result);
+                                    alert('Pembayaran gagal, silakan coba lagi');
+                                    button.disabled = false;
+                                    button.textContent = 'Pilih Paket';
+                                },
+                                onClose: function () {
+                                    button.disabled = false;
+                                    button.textContent = 'Pilih Paket';
+                                }
+                            });
+                        } else {
+                            throw new Error('Token transaksi tidak ditemukan');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert(error.message || "Ada kesalahan, coba lagi nanti.");
+                        button.disabled = false;
+                        button.textContent = 'Pilih Paket';
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="SB-Mid-client-GH5dOPNcRu4UzZAH"></script>
+
 </body>
 
 </html>

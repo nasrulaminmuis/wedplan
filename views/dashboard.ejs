@@ -1,27 +1,99 @@
 <%- include('navbar'); %>
-        <!-- partial -->
-        <div class="main-panel">
-          <div class="content-wrapper pb-0">
-            <div class="row">
-              <div class="col-sm-6 col-xl-4 stretch-card grid-margin">
-                <%- include('partial/jadwal'); %>
+<div class="main-panel">
+  <div class="content-wrapper pb-0">
+    <div class="row">
+      <!-- Events Card -->
+      <div class="col-sm-6 col-xl-4 stretch-card grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title mb-2">Event yang akan datang (<%= events.length %>)</div>
+            <% events.forEach(event => { %>
+              <div class="d-flex border-bottom border-top py-3">
+                <div class="ps-2">
+                  <span class="font-12 text-muted"><%= new Date(event.event_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                  <p class="m-0 text-black"><%= event.event_name %></p>
+                </div>
               </div>
-              <div class="col-xl-4 grid-margin">
-                <%- include('partial/dana'); %>
-              </div>
-              <div class="col-sm-6 col-xl-4 stretch-card grid-margin">
-                <%- include('partial/vendor'); %>
-              </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget Cards -->
+      <div class="col-xl-4 grid-margin">
+        <div class="card stretch-card mb-3">
+          <div class="card-body d-flex flex-wrap justify-content-between">
+            <div>
+              <h4 class="font-weight-semibold mb-1 text-black">Dana Masuk</h4>
             </div>
-            <!-- table row starts here -->
-            <div class="row">
-              <div class="col-xl-8 stretch-card grid-margin">
-                <%- include('partial/rsvp'); %>
+            <h3 class="text-success font-weight-bold">+<%= (savings/1000000).toFixed(0) %>JT</h3>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-body d-flex flex-wrap justify-content-between">
+            <div>
+              <h4 class="font-weight-semibold mb-1 text-black">Pengeluaran</h4>
+            </div>
+            <h3 class="text-danger font-weight-bold">-<%= (expenses/1000000).toFixed(0) %>JT</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vendors Card -->
+      <div class="col-sm-6 col-xl-4 stretch-card grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title mb-5">Kontak Vendor</div>
+            <% vendors.forEach(vendor => { %>
+              <div class="d-flex border-bottom mb-4 pb-2">
+                <div class="hexagon">
+                  <div class="hex-mid hexagon-primary">
+                    <i class="mdi mdi-account-outline"></i>
+                  </div>
+                </div>
+                <div class="ps-4">
+                  <h4 class="font-weight-bold text-primary mb-0"><%= vendor.vendor_name %></h4>
+                  <h6 class="text-muted"><%= vendor.contact_info %></h6>
+                </div>
               </div>
-              <div class="row">
-                <%- include('partial/kartuvendor'); %>
-              </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RSVP Table -->
+    <div class="row">
+      <div class="col-xl-8 stretch-card grid-margin">
+        <div class="card">
+          <div class="card-body pb-0">
+            <h4 class="card-title mb-0">RSVP</h4>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table custom-table text-dark">
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Hubungan</th>
+                    <th>RSVP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% rsvps.forEach(rsvp => { %>
+                    <tr>
+                      <td><%= rsvp.guest_name %></td>
+                      <td><%= rsvp.contact %></td>
+                      <td><%= rsvp.status %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
             </div>
           </div>
-          <!-- content-wrapper ends -->
-<%- include('footer'); %>          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('footer'); %>

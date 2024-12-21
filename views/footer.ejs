@@ -6,6 +6,58 @@
 <!-- page-body-wrapper ends -->
 </div>
 <!-- container-scroller -->
+ <!-- Required scripts -->
+ <script src="/views/dashboard/assets/vendors/js/vendor.bundle.base.js"></script>
+ <!-- End inject -->
+ <!-- Plugin js for this page -->
+ <script src="/views/dashboard/assets/vendors/jquery-bar-rating/jquery.barrating.min.js"></script>
+ <!-- End plugin js for this page -->
+ <!-- inject:js -->
+ <script src="/views/dashboard/assets/js/off-canvas.js"></script>
+ <script src="/views/dashboard/assets/js/hoverable-collapse.js"></script>
+ <script src="/views/dashboard/assets/js/misc.js"></script>
+ <!-- endinject -->
+
+ <script>
+   document.addEventListener('DOMContentLoaded', function () {
+     // Variable dari server-side
+     const isFree = <%= subscription.plan_name === "Gratis" ? "true" : "false" %>;
+
+     if (isFree) {
+       // Ambil semua link dengan class 'restricted'
+       const restrictedLinks = document.querySelectorAll('.nav-link.restricted');
+
+       restrictedLinks.forEach(function (link) {
+         link.addEventListener('click', function (e) {
+           e.preventDefault(); // Mencegah navigasi
+           showUpgradePopup();
+         });
+       });
+     }
+
+     // Popup elements
+     const upgradePopup = document.getElementById('upgradePopup');
+     const closeBtn = document.querySelector('.upgrade-popup-content .close-btn');
+
+     // Function to show popup
+     function showUpgradePopup() {
+       upgradePopup.style.display = 'flex';
+     }
+
+     // Function to hide popup
+     function hideUpgradePopup() {
+       upgradePopup.style.display = 'none';
+     }
+
+     // Event listeners for closing the popup
+     closeBtn.addEventListener('click', hideUpgradePopup);
+     window.addEventListener('click', function (event) {
+       if (event.target === upgradePopup) {
+         hideUpgradePopup();
+       }
+     });
+   });
+ </script>
 <!-- plugins:js -->
 <script src="/views/dashboard/assets/vendors/js/vendor.bundle.base.js"></script>
 <!-- endinject -->
@@ -29,5 +81,6 @@
 <!-- Custom js for this page -->
 <script src="/views/dashboard/assets/js/dashboard.js"></script>
 <!-- End custom js for this page -->
+ 
 </body>
 </html>
